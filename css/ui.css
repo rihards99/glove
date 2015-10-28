@@ -1,0 +1,26 @@
+.host-btn {
+	position: absolute;
+    left: 30%;
+	width: 30%;
+	top: 30%;
+}
+
+.join-btn {
+	position: absolute;
+    left: 30%;
+	width: 30%;
+	top: 50%;
+}
+
+.join-key {
+	position: absolute;
+    left: 30%;
+	width: 30%;
+	top: 60%;
+}
+
+.host-key {
+	position: absolute;
+    left: 20px;
+	top: 20px;
+}

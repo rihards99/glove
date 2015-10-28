@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "out": "dist/app.js",
+        "sourceMap": true
+    },
+    "exclude": [
+        "lib/p2.d.ts",
+        "lib/phaser.comments.d.ts",
+        "lib/pixi.comments.d.ts",
+        "lib/pixi.d.ts"
+    ]
+}
