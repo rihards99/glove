@@ -3,8 +3,7 @@ module GameModule {
 		static screenWidth: number = 800;
 		static screenHeight: number = 600;
 		public ui: Ui;
-		public server: Server;
-		public network: Network;
+		public key: string;
 
 		constructor() {
 			super(Game.screenWidth, Game.screenHeight, Phaser.AUTO, 'content', null);
@@ -13,26 +12,23 @@ module GameModule {
 			this.state.add('Boot', Boot, false);
 			this.state.add('Preloader', Preloader, false);
 			this.state.add('MainMenu', MainMenu, false);
-			this.state.add('Level1', Level1, false);
+			this.state.add('HostState', HostState, false);
+			this.state.add('ClientState', ClientState, false);
 
 			this.state.start('Boot');
 		}
 
 		hostGame() {
-			this.server = new Server(this);
-			this.server.start();
+			this.ui.clear();
+			this.state.start('HostState', true, false);
+			this.ui.drawGameUi();
 		}
 
 		joinGame(key) {
-			this.network = new Network();
-			this.network.connectTo(key);
-			this.startGame();
-			this.ui.displayHostKey(key);
-		}
-
-		startGame() {
+			this.key = key;
 			this.ui.clear();
-			this.state.start('Level1', true, false);
+			this.state.start('ClientState', true, false);
+			this.ui.drawGameUi();
 		}
 	}
 } 

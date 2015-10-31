@@ -1,6 +1,6 @@
 module GameModule {
 	export class Ui {
-		game: GameModule.Game;
+		game: Game;
 		elements: any[] = [];
 		
 		constructor(game, width, height){
@@ -26,7 +26,6 @@ module GameModule {
 			var joinBtn = $("#joinBtn");
 			this.elements.push(joinBtn);
 			joinBtn.addClass('join-btn btn btn-primary');
-			var that = this;
 			joinBtn.click(function(){
 				that.game.joinGame($("#joinKey").val());
 			});
@@ -37,12 +36,15 @@ module GameModule {
 			joinKey.addClass('join-key form-control');
 		}
 		
-		displayHostKey(key) {
-			console.log('asd');
-			$("#ui").append('<div id="hostKey">'+ key + '</div>');
+		drawGameUi() {
+			$("#ui").append('<div id="hostKey"></div>');
 			var hostKey = $("#hostKey");
 			this.elements.push(hostKey);
 			hostKey.addClass('host-key well well-sm');
+		}
+
+		setHostKey(key) {
+			$("#hostKey").html(key);
 		}
 		
 		clear() {

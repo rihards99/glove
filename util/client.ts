@@ -1,16 +1,19 @@
 module GameModule {
-	export class Network {
+	export class Client {
+		state: ClientState;
 		peer: any;
 		conn: any;
-		state: GameModule.Level1;
 		
-		connectTo(hostKey) {
+		constructor(state) {
+			this.state = state;
+		}
+
+		start() {
 			this.peer = new Peer({ key: 'q4mb7wppdhg2e29' });
-			this.conn = this.peer.connect(hostKey);
+			this.conn = this.peer.connect(this.state.game.key);
 			var that = this;
 			this.conn.on('open', function() {
 				console.log("Connected to host");
-				console.log("Sending...");
 			});
 			
 			this.conn.on('data', function(data) {
@@ -24,23 +27,19 @@ module GameModule {
 			console.log("spawn peers: ", params.peers);
 			console.log("spawn you: ", params.player.x, params.player.y);
 		}
-		
-		private spawnPeer(params) {
-			this.state.spawnPeer(params);
-			console.log("spawn peer at ", params.x, params.y);
+
+		private syncState(params) {
+			this.state.syncState(params.state);
 		}
-		
-		private movePeer(params) {
-			this.state.movePeer(params.id, params.x, params.y);
-		}
-		
+
 		// SEND
-		movePlayer(x, y) {
-			this.conn.send({ method: "movePlayer",
+		input(key, isDown) {
+			this.conn.send({
+				method: "input",
 				params: {
 					id: this.conn.id,
-					x: x,
-					y: y
+					key: key,
+					state: isDown
 				}
 			});
 		}
