@@ -11,7 +11,7 @@ module GameModule {
 
 		update() {
 			// UP/DOWN controls
-			this.body.velocity.y = 0;
+			this.slowDown('y');
 			if (this.state.keyboardState[this.key].W) {
 				this.body.velocity.y = -this.walkSpeed;
 			}
@@ -20,7 +20,7 @@ module GameModule {
 			}
 			
 			// LEFT/RIGHT controls
-			this.body.velocity.x = 0;
+			this.slowDown('x');
 			if (this.state.keyboardState[this.key].A) {
 				this.body.velocity.x = -this.walkSpeed;
 

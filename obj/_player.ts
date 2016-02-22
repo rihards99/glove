@@ -28,16 +28,10 @@ module GameModule {
 			if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
 				this.body.velocity.x = -this.walkSpeed;
 				this.frame = 2;
-				// if (this.scale.x == 1) {
-				// 	this.scale.x = -1;
-				// }
 			}
 			else if (this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
 				this.body.velocity.x = this.walkSpeed;
 				this.frame = 3;
-				// if (this.scale.x == -1) {
-				// 	this.scale.x = 1;
-				// }
 			}
 		}
 

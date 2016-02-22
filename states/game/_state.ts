@@ -11,11 +11,10 @@ module GameModule {
 			this.game.world.setBounds(0, 0, 600, 800);
 			this.game.physics.startSystem(Phaser.Physics.ARCADE);
 			this.game.stage.backgroundColor = '#526F35'; // grass color
+			this.game.stage.disableVisibilityChange = true;
 
 			this.peerGroup = this.game.add.group();
 			this.peerGroup.enableBody = true;
-			this.peerGroup.setAll('body.customSeparateX', true);
-			this.peerGroup.setAll('body.customSeparateY', true);
 		}
 
 		addPeer(id, coords) {
@@ -23,6 +22,11 @@ module GameModule {
 			var peer = new PeerPlayer(this.game, coords.x, coords.y, id);
 			this.players[id] = peer;
 			this.peerGroup.add(peer);
+		}
+		
+		removePeer(id) {
+			this.peerGroup.remove(this.players[id]);
+			delete this.players[id];
 		}
 
 		update() {

@@ -19,6 +19,11 @@ module GameModule {
 			this.conn.on('data', function(data) {
 				that[data.method](data.params);
 			});
+			
+			window.onunload = function(){
+				that.conn.close();
+				that.peer.destroy();
+			};
 		}
 		
 		// RECIEVE
@@ -30,6 +35,10 @@ module GameModule {
 
 		private syncState(params) {
 			this.state.syncState(params.state);
+		}
+		
+		private removePlayer(params) {
+			this.state.removePeer(params.id)
 		}
 
 		// SEND

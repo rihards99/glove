@@ -24,9 +24,17 @@ module GameModule {
 					console.log("Client connected");
 					that.addPlayer(this);
 				});
+				this.conn.on('close', function(data) {
+					console.log("Client disconnected");
+					that.removePlayer(this);
+				});
 				this.conn.on('data', function(data) {
 					that[data.method](data.params);
 				});
+				
+				window.onunload = function() {
+					that.peer.destroy();
+				};
 			});
 		}
 
@@ -63,6 +71,16 @@ module GameModule {
 			
 			this.state.addPeer(conn.id, coords); // for host game
 			this.connections[conn.id] = conn;
+		}
+		
+		private removePlayer(conn) {
+			this.state.removePeer(conn.id); // for host game
+			conn.send({
+				method: "removePlayer",
+				params: {
+					id: conn.id,
+				}
+			});
 		}
 		
 		private broadcast(params: Object) {

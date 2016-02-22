@@ -12,7 +12,6 @@ module GameModule {
 			//  Load our actual games assets
 			// this.load.audio('music', 'img/title.mp3', true);
 			this.load.spritesheet('knight', 'img/knight.png', 32, 48, 4);
-			// this.load.image('knight', 'img/knight.png');
 			this.load.image('knight2', 'img/knight2.png');
 		}
 
