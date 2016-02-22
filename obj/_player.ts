@@ -1,6 +1,7 @@
 module GameModule {
 	export class Player extends Phaser.Sprite {
 		walkSpeed: number = 150;
+		slowDownSpeed: number = 15; // Needs to be a fraction of the walk speed.
 
 		constructor(game: GameModule.Game, x: number, y: number, sprite: string) {
 			super(game, x, y, sprite, 0);
@@ -12,29 +13,40 @@ module GameModule {
 
 		controls() {
 			// UP/DOWN controls
-			this.body.velocity.y = 0;
+			this.slowDown('y');
+			this.frame = 1;
 			if (this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
 				this.body.velocity.y = -this.walkSpeed;
+				this.frame = 0;
 			}
 			else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S)) {
 				this.body.velocity.y = this.walkSpeed;
 			}
 			
 			// LEFT/RIGHT controls
-			this.body.velocity.x = 0;
+			this.slowDown('x');
 			if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
 				this.body.velocity.x = -this.walkSpeed;
-
-				if (this.scale.x == 1) {
-					this.scale.x = -1;
-				}
+				this.frame = 2;
+				// if (this.scale.x == 1) {
+				// 	this.scale.x = -1;
+				// }
 			}
 			else if (this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
 				this.body.velocity.x = this.walkSpeed;
+				this.frame = 3;
+				// if (this.scale.x == -1) {
+				// 	this.scale.x = 1;
+				// }
+			}
+		}
 
-				if (this.scale.x == -1) {
-					this.scale.x = 1;
-				}
+		protected slowDown(coord) {
+			if (this.body.velocity[coord] > 0) {
+				this.body.velocity[coord] -= this.slowDownSpeed;
+			}
+			else if (this.body.velocity[coord] < 0) {
+				this.body.velocity[coord] += this.slowDownSpeed;
 			}
 		}
 	}
