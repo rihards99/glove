@@ -33,69 +33,33 @@ module GameModule {
 			// UP/DOWN controls
 			this.slowDown('y');
 			if (this.isKeyDown('W')){
-			//if (this.game.input.keyboard.isDown(Phaser.Keyboard.W)) {
-				this.moveUp();
+				this.body.velocity.y = -this.walkSpeed;
+				this.animations.play('up');
 			}
 			else if (this.isKeyDown('S')){
-			//else if (this.game.input.keyboard.isDown(Phaser.Keyboard.S)) {
-				this.moveDown();
+				this.body.velocity.y = this.walkSpeed;
+				this.animations.play('down');
 			}
 			
 			// LEFT/RIGHT controls
 			this.slowDown('x');
 			if (this.isKeyDown('A')){
-			//if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
-				this.moveLeft();
+				this.body.velocity.x = -this.walkSpeed;
+				this.animations.play('left');
 			}
 			else if (this.isKeyDown('D')){
-			//else if (this.game.input.keyboard.isDown(Phaser.Keyboard.D)) {
-				this.moveRight();
-			}
-			/*
-			if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.canAttack) {
-				this.canAttack = false;
-				var sword = this.game.add.sprite(this.x, this.y, 'sword');
-				this.game.time.events.add(200, function(){
-					//sword.destroy();
-				}, this);
-			}
-			else if (!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && !this.canAttack) {
-				this.canAttack = true;
+				this.body.velocity.x = this.walkSpeed;
+				this.animations.play('right');
 			}
 			
 			// TODO: TESTING
-			if (this.game.input.keyboard.isDown(Phaser.Keyboard.E)) {
+			if (this.isKeyDown('E')) {
 				this.health -= 1;
 			}
 			
-			if (this.game.input.keyboard.isDown(Phaser.Keyboard.Q)) {
+			if (this.isKeyDown('Q')) {
 				this.health += 1;
 			}
-			*/
-		}
-		// Used by both host/client player and peer player
-		private moveUp() {
-			this.body.velocity.y = -this.walkSpeed;
-			//this.frame = 0;
-			this.animations.play('up');
-		}
-		
-		private moveDown() {
-			this.body.velocity.y = this.walkSpeed;
-			//this.frame = 1;
-			this.animations.play('down');
-		}
-		
-		private moveLeft() {
-			this.body.velocity.x = -this.walkSpeed;
-			//this.frame = 2;
-			this.animations.play('left');
-		}
-		
-		private moveRight() {
-			this.body.velocity.x = this.walkSpeed;
-			//this.frame = 3;
-			this.animations.play('right');
 		}
 		
 		update() {
