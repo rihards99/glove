@@ -24,6 +24,7 @@ module GameModule {
 			this.player.y = players[this.client.conn.id].y;
 			this.player.body.velocity.x = players[this.client.conn.id].dx;
 			this.player.body.velocity.y = players[this.client.conn.id].dy;
+			this.player.health = players[this.client.conn.id].health;
 
 			for(var key in players) {
 				if (key === this.client.conn.id) continue;
@@ -31,6 +32,7 @@ module GameModule {
 				this.players[key].y = players[key].y;
 				this.players[key].body.velocity.x = players[key].dx;
 				this.players[key].body.velocity.y = players[key].dy;
+				this.players[key].health = players[key].health;
 			}
 		}
 
@@ -41,7 +43,7 @@ module GameModule {
 		}
 
 		setupControls() {
-			var keys = ["W", "A", "S", "D"];
+			var keys = ["W", "A", "S", "D", "E", "Q"];
 			for(var key of keys) {
 				this.setKeyCallbacks(key);
 			}

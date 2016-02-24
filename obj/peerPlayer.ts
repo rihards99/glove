@@ -8,8 +8,15 @@ module GameModule {
 			this.key = key;
 			this.state = game.state.getCurrentState();
 		}
+		
+		isKeyDown(key: string): boolean {
+			return this.state.keyboardState[this.key][key];
+		}
 
 		update() {
+			this.controls();
+			/*
+			// TODO: refactor using the move* functions to keep it DRY
 			// UP/DOWN controls
 			this.slowDown('y');
 			if (this.state.keyboardState[this.key].W) {
@@ -35,6 +42,18 @@ module GameModule {
 					this.scale.x = 1;
 				}
 			}
+			
+			// TODO: TESTING
+			if (this.state.keyboardState[this.key].E) {
+				this.health -= 1;
+			}
+			
+			if (this.state.keyboardState[this.key].Q) {
+				this.health += 1;
+			}
+			*/
+			super.update();
+			
 		}
 	}
 }

@@ -11,8 +11,14 @@ module GameModule {
 
 			//  Load our actual games assets
 			// this.load.audio('music', 'img/title.mp3', true);
-			this.load.spritesheet('knight', 'img/knight.png', 32, 48, 4);
-			this.load.image('knight2', 'img/knight2.png');
+			
+			//this.load.spritesheet('knight', 'img/knight.png', 32, 48, 4);
+			//this.load.image('knight2', 'img/knight2.png');
+			
+			this.load.spritesheet('knight', 'img/new_knight.png', 32, 32, 12);
+			this.load.spritesheet('knight2', 'img/new_knight2.png', 32, 32, 12);
+			
+			this.load.image('sword', 'img/sword.png');
 		}
 
 		create() {
@@ -23,6 +29,7 @@ module GameModule {
 		startMainMenu() {
 			this.game.state.start('MainMenu', true, false);
 		}
+		
 		startGame() {
 			this.game.state.start('Level1', true, false);
 		}

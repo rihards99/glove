@@ -18,7 +18,13 @@ module GameModule {
 		}
 
 		addPeer(id, coords) {
-			this.keyboardState[id] = { W: false, A: false, S: false, D: false };
+			// current state of the player's controls. False => not pressed
+			var keys = ["W", "A", "S", "D", "E", "Q"];
+			this.keyboardState[id] = {};
+			for(var key of keys) {
+				this.keyboardState[id][key] = false;
+			}
+
 			var peer = new PeerPlayer(this.game, coords.x, coords.y, id);
 			this.players[id] = peer;
 			this.peerGroup.add(peer);

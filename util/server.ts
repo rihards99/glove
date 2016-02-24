@@ -73,6 +73,7 @@ module GameModule {
 			this.connections[conn.id] = conn;
 		}
 		
+		// TODO: review this function
 		private removePlayer(conn) {
 			this.state.removePeer(conn.id); // for host game
 			conn.send({
