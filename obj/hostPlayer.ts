@@ -15,7 +15,7 @@ module GameModule {
 				this.canAttack = false;
 				var sword = this.game.add.sprite(this.x, this.y, 'sword');
 				this.game.time.events.add(200, function(){
-					//sword.destroy();
+					sword.destroy();
 				}, this);
 			}
 			else if (!this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && !this.canAttack) {

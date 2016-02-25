@@ -31,7 +31,8 @@ module GameModule {
 		controls() {
 			//this.animations.stop();
 			// UP/DOWN controls
-			this.slowDown('y');
+			this.body.velocity.x = 0;
+			this.body.velocity.y = 0;
 			if (this.isKeyDown('W')){
 				this.body.velocity.y = -this.walkSpeed;
 				this.animations.play('up');
@@ -42,8 +43,8 @@ module GameModule {
 			}
 			
 			// LEFT/RIGHT controls
-			this.slowDown('x');
-			if (this.isKeyDown('A')){
+			
+			else if (this.isKeyDown('A')){
 				this.body.velocity.x = -this.walkSpeed;
 				this.animations.play('left');
 			}
@@ -82,15 +83,6 @@ module GameModule {
 	        
 			bmd.context.fillRect(0, 0, percent * this.barWidth, this.barHeight);
 			return bmd
-		}
-
-		protected slowDown(coord) {
-			if (this.body.velocity[coord] > 0) {
-				this.body.velocity[coord] -= this.slowDownSpeed;
-			}
-			else if (this.body.velocity[coord] < 0) {
-				this.body.velocity[coord] += this.slowDownSpeed;
-			}
 		}
 	}
 }
