@@ -19,9 +19,12 @@ module GameModule {
 			this.activeUpdates = true;
 		}
 
-		syncState(players) {
-			this.player.x = players[this.client.conn.id].x;
-			this.player.y = players[this.client.conn.id].y;
+		syncState(players: Object) {
+			
+			if (this.needsSync(this.player, players[this.client.conn.id])) {
+				this.player.x = players[this.client.conn.id].x;
+				this.player.y = players[this.client.conn.id].y;
+			}
 			this.player.body.velocity.x = players[this.client.conn.id].dx;
 			this.player.body.velocity.y = players[this.client.conn.id].dy;
 			this.player.health = players[this.client.conn.id].health;
@@ -34,6 +37,17 @@ module GameModule {
 				this.players[key].body.velocity.y = players[key].dy;
 				this.players[key].health = players[key].health;
 			}
+		}
+		
+		private needsSync(localPlayerObj: Phaser.Sprite, serverPlayerObj:Phaser.Sprite): boolean {
+			var width = localPlayerObj.width;
+			var height = localPlayerObj.height;
+			var dX = localPlayerObj.x - serverPlayerObj.x;
+			var dY = localPlayerObj.y - serverPlayerObj.y;
+			
+			if (dX > width || dX < (width*(-1))) return true;
+			if (dY > height || dY < (height*(-1))) return true;
+			return false
 		}
 
 		update() {

@@ -5,6 +5,7 @@ module GameModule {
 			super(game, x, y, 'knight');
 		}
 		
+		// Check state of key locally
 		isKeyDown(key: string): boolean {
 			return this.game.input.keyboard.isDown(Phaser.Keyboard[key]);
 		}

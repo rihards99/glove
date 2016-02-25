@@ -1,14 +1,16 @@
 module GameModule {
+	enum Direction {UP, DOWN, LEFT, RIGHT};
 	export abstract class Player extends Phaser.Sprite {
 		walkSpeed: number = 100;
 		slowDownSpeed: number = 10; // Needs to be a fraction of the walk speed.
+		canAttack: boolean = true;
+		direction: Direction = Direction.UP;
 		
 		bar: Phaser.Sprite;
 		health: number = 100;
 		maxHealth: number = 100;
 		barHeight: number = 5;
 		barWidth: number = 40;
-		canAttack: boolean = true;
 
 		constructor(game: GameModule.Game, x: number, y: number, sprite: string) {
 			super(game, x, y, sprite, 0);
@@ -27,30 +29,35 @@ module GameModule {
 		
 		abstract isKeyDown(key: string): boolean;
 		
-		// Implemented by clientPlayer and hostPlayer
 		controls() {
 			//this.animations.stop();
-			// UP/DOWN controls
 			this.body.velocity.x = 0;
 			this.body.velocity.y = 0;
+			
+			// UP/DOWN controls
 			if (this.isKeyDown('W')){
 				this.body.velocity.y = -this.walkSpeed;
 				this.animations.play('up');
+				this.direction = Direction.UP;
 			}
 			else if (this.isKeyDown('S')){
 				this.body.velocity.y = this.walkSpeed;
 				this.animations.play('down');
+				this.direction = Direction.DOWN;
 			}
-			
 			// LEFT/RIGHT controls
-			
 			else if (this.isKeyDown('A')){
 				this.body.velocity.x = -this.walkSpeed;
 				this.animations.play('left');
+				this.direction = Direction.LEFT;
 			}
 			else if (this.isKeyDown('D')){
 				this.body.velocity.x = this.walkSpeed;
 				this.animations.play('right');
+				this.direction = Direction.RIGHT;
+			}
+			else {
+				this.animations.stop();
 			}
 			
 			// TODO: TESTING

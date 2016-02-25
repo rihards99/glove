@@ -9,6 +9,7 @@ module GameModule {
 			this.state = game.state.getCurrentState();
 		}
 		
+		// Check the keyboard state delivered by the server
 		isKeyDown(key: string): boolean {
 			return this.state.keyboardState[this.key][key];
 		}
