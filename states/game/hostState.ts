@@ -14,6 +14,7 @@ module GameModule {
 		initState() { // run after server.start()
 			var coords = this.server.randomCoords();
 			this.player = new HostPlayer(this.game, coords.x, coords.y);
+			this.keyboardState[this.server.peer.id] = this.getDefaultKeyboardObj();
 			this.activeUpdates = true;
 		}
 
@@ -36,6 +37,17 @@ module GameModule {
 				};
 			}
 			return temp;
+		}
+		
+		setKeyCallbacks(keyName: string) {
+			var key = this.game.input.keyboard.addKey(Phaser.Keyboard[keyName]);
+			var that = this;
+			key.onDown.add(function() {
+				that.keyboardState[that.server.peer.id][keyName] = true;
+			}, this);
+			key.onUp.add(function() {
+				that.keyboardState[that.server.peer.id][keyName] = false;
+			}, this);
 		}
 
 		update() {

@@ -1,5 +1,5 @@
 module GameModule {
-	export class State extends Phaser.State {
+	export abstract class State extends Phaser.State {
 		game: Game;
 		player: Player;
 		players: Object = {};
@@ -15,24 +15,42 @@ module GameModule {
 
 			this.peerGroup = this.game.add.group();
 			this.peerGroup.enableBody = true;
+			
+			this.setupControls();
 		}
+		
+		abstract setKeyCallbacks(keyName: string);
 
 		addPeer(id, coords) {
-			// current state of the player's controls. False => not pressed
 			var keys = ["W", "A", "S", "D", "E", "Q"];
-			this.keyboardState[id] = {};
-			for(var key of keys) {
-				this.keyboardState[id][key] = false;
-			}
-
+			this.keyboardState[id] = this.getDefaultKeyboardObj();
 			var peer = new PeerPlayer(this.game, coords.x, coords.y, id);
 			this.players[id] = peer;
 			this.peerGroup.add(peer);
 		}
 		
+		// Also used in hostState
+		protected getDefaultKeyboardObj(): Object {
+			var keys = ["W", "A", "S", "D", "E", "Q"];
+			var keyboardObj = {};
+			// current state of the player's controls. False => not pressed
+			for(var key of keys) {
+				keyboardObj[key] = false;
+			}
+			return keyboardObj;
+		}
+		
 		removePeer(id) {
+			this.players[id].bar.destroy();
 			this.peerGroup.remove(this.players[id]);
 			delete this.players[id];
+		}
+		
+		setupControls() {
+			var keys = ["W", "A", "S", "D", "E", "Q"];
+			for(var key of keys) {
+				this.setKeyCallbacks(key);
+			}
 		}
 
 		update() {

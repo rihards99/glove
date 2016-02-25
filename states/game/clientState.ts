@@ -7,7 +7,6 @@ module GameModule {
 			super.create();
 			this.client = new Client(this);
 			this.client.start();
-			this.setupControls();
 		}
 
 		initState(player, peers) {
@@ -20,7 +19,6 @@ module GameModule {
 		}
 
 		syncState(players: Object) {
-			
 			if (this.needsSync(this.player, players[this.client.conn.id])) {
 				this.player.x = players[this.client.conn.id].x;
 				this.player.y = players[this.client.conn.id].y;
@@ -31,19 +29,21 @@ module GameModule {
 
 			for(var key in players) {
 				if (key === this.client.conn.id) continue;
-				this.players[key].x = players[key].x;
-				this.players[key].y = players[key].y;
+				if (this.needsSync(this.players[key], players[key])) {
+					this.players[key].x = players[key].x;
+					this.players[key].y = players[key].y;
+				}
 				this.players[key].body.velocity.x = players[key].dx;
 				this.players[key].body.velocity.y = players[key].dy;
 				this.players[key].health = players[key].health;
 			}
 		}
 		
-		private needsSync(localPlayerObj: Phaser.Sprite, serverPlayerObj:Phaser.Sprite): boolean {
-			var width = localPlayerObj.width;
-			var height = localPlayerObj.height;
-			var dX = localPlayerObj.x - serverPlayerObj.x;
-			var dY = localPlayerObj.y - serverPlayerObj.y;
+		private needsSync(local: Phaser.Sprite, remote:Phaser.Sprite): boolean {
+			var width = local.width;
+			var height = local.height;
+			var dX = local.x - remote.x;
+			var dY = local.y - remote.y;
 			
 			if (dX > width || dX < (width*(-1))) return true;
 			if (dY > height || dY < (height*(-1))) return true;
@@ -56,14 +56,7 @@ module GameModule {
 			}
 		}
 
-		setupControls() {
-			var keys = ["W", "A", "S", "D", "E", "Q"];
-			for(var key of keys) {
-				this.setKeyCallbacks(key);
-			}
-		}
-
-		setKeyCallbacks(keyName) {
+		setKeyCallbacks(keyName: string) {
 			var key = this.game.input.keyboard.addKey(Phaser.Keyboard[keyName]);
 			var that = this;
 			key.onDown.add(function() {

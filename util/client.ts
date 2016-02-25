@@ -29,15 +29,18 @@ module GameModule {
 		// RECIEVE
 		private initState(params) {
 			this.state.initState(params.player, params.peers);
-			console.log("spawn peers: ", params.peers);
-			console.log("spawn you: ", params.player.x, params.player.y);
 		}
 
 		private syncState(params) {
+			this.state.keyboardState = params.keyboard;
 			this.state.syncState(params.state);
 		}
 		
-		private removePlayer(params) {
+		private addPeer(params) {
+			this.state.addPeer(params.id, params.coords)
+		}
+		
+		private removePeer(params) {
 			this.state.removePeer(params.id)
 		}
 

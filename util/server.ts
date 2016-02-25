@@ -22,11 +22,11 @@ module GameModule {
 				this.conn = conn;
 				this.conn.on('open', function() {
 					console.log("Client connected");
-					that.addPlayer(this);
+					that.addPeer(this);
 				});
 				this.conn.on('close', function(data) {
 					console.log("Client disconnected");
-					that.removePlayer(this);
+					that.removePeer(this);
 				});
 				this.conn.on('data', function(data) {
 					that[data.method](data.params);
@@ -53,14 +53,15 @@ module GameModule {
 			this.broadcast({
 				method: "syncState",
 				params: {
-					state: state
+					state: state,
+					keyboard: this.state.keyboardState
 				}
 			});
 		}
 
-		private addPlayer(conn) {
+		private addPeer(conn) {
 			var coords = this.randomCoords();
-			
+
 			conn.send({
 				method: "initState",
 				params: {
@@ -70,16 +71,22 @@ module GameModule {
 			});
 			
 			this.state.addPeer(conn.id, coords); // for host game
+			this.broadcast({
+				method: "addPeer",
+				params: {
+					id: conn.id,
+					coords: coords
+				}
+			});
 			this.connections[conn.id] = conn;
 		}
 		
-		// TODO: review this function
-		private removePlayer(conn) {
+		private removePeer(conn) {
 			this.state.removePeer(conn.id); // for host game
-			conn.send({
-				method: "removePlayer",
+			this.broadcast({
+				method: "removePeer",
 				params: {
-					id: conn.id,
+					id: conn.id
 				}
 			});
 		}

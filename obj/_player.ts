@@ -23,14 +23,14 @@ module GameModule {
 			this.animations.add('left', [3, 4, 5], 10, true);
 			this.animations.add('right', [6, 7, 8], 10, true);
 			this.animations.add('up', [9, 10, 11], 10, true);
-			// the creation position of the bar isn't important, since it gets updated every cycle
+			// the creation position of the bar isn't important, 
+			// since it gets updated every cycle
         	this.bar = game.add.sprite(0, 0, this.getHealthBar());
 		}
 		
 		abstract isKeyDown(key: string): boolean;
 		
 		controls() {
-			//this.animations.stop();
 			this.body.velocity.x = 0;
 			this.body.velocity.y = 0;
 			
