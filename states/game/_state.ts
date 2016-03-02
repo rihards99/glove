@@ -5,14 +5,16 @@ module GameModule {
 		players: Object = {};
 		keyboardState: Object = {};
 		peerGroup: Phaser.Group;
+		wallGroup: Phaser.Group;
 		activeUpdates: boolean = false;
+		keys: any = ["W", "A", "S", "D", "E", "Q", "SPACEBAR"];
 
 		create() {
 			this.game.world.setBounds(0, 0, 600, 800);
 			this.game.physics.startSystem(Phaser.Physics.ARCADE);
 			this.game.stage.backgroundColor = '#526F35'; // grass color
 			this.game.stage.disableVisibilityChange = true;
-
+			
 			this.peerGroup = this.game.add.group();
 			this.peerGroup.enableBody = true;
 			
@@ -20,9 +22,9 @@ module GameModule {
 		}
 		
 		abstract setKeyCallbacks(keyName: string);
+		abstract attack(sword: Phaser.Sprite);
 
 		addPeer(id, coords) {
-			var keys = ["W", "A", "S", "D", "E", "Q"];
 			this.keyboardState[id] = this.getDefaultKeyboardObj();
 			var peer = new PeerPlayer(this.game, coords.x, coords.y, id);
 			this.players[id] = peer;
@@ -30,11 +32,10 @@ module GameModule {
 		}
 		
 		// Also used in hostState
-		protected getDefaultKeyboardObj(): Object {
-			var keys = ["W", "A", "S", "D", "E", "Q"];
+		getDefaultKeyboardObj(): Object {
 			var keyboardObj = {};
 			// current state of the player's controls. False => not pressed
-			for(var key of keys) {
+			for(var key of this.keys) {
 				keyboardObj[key] = false;
 			}
 			return keyboardObj;
@@ -47,10 +48,15 @@ module GameModule {
 		}
 		
 		setupControls() {
-			var keys = ["W", "A", "S", "D", "E", "Q"];
-			for(var key of keys) {
+			for(var key of this.keys) {
 				this.setKeyCallbacks(key);
 			}
+		}
+		
+		swordTimeout(sword: Phaser.Sprite) {
+			this.game.time.events.add(200, function(){
+				sword.destroy();
+			}, this);
 		}
 
 		update() {

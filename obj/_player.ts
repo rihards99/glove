@@ -69,8 +69,56 @@ module GameModule {
 				this.health += 1;
 			}
 		}
+
+		checkAttack(){
+			if (this.isKeyDown('SPACEBAR') && this.canAttack) {
+				this.canAttack = false;
+				var sword = this.game.add.sprite(this.x, this.y, 'sword');
+				this.game.physics.enable(sword);
+				
+				if (this.direction == Direction.UP) {
+					sword.x -= (sword.width / 2);
+					sword.y -= sword.height * 1.5;
+					sword.body.x = sword.x;
+					sword.body.y = sword.y;
+				}
+				else if (this.direction == Direction.DOWN) {
+					sword.angle += 180;
+					sword.x += (sword.width / 2);
+					sword.y += sword.height * 1.5;
+					sword.body.x = sword.x - sword.width;
+					sword.body.y = sword.y - sword.height;
+				}
+				else if (this.direction == Direction.LEFT) {
+					sword.angle += 270;
+					sword.x -= sword.height * 1.5;
+					sword.y += (sword.width / 2);
+					sword.body.width = sword.height;
+					sword.body.height = sword.width;
+					sword.body.x = sword.x;
+					sword.body.y = sword.y - sword.width;
+				}
+				else if (this.direction == Direction.RIGHT) {
+					sword.angle += 90;
+					sword.x += sword.height * 1.5;
+					sword.y -= (sword.width / 2);
+					sword.body.width = sword.height;
+					sword.body.height = sword.width;
+					sword.body.x = sword.x - sword.height;
+					sword.body.y = sword.y;
+				}
+				var state: any = this.game.state.getCurrentState();
+				state.attack(sword);
+			}
+			else if (!this.isKeyDown('SPACEBAR') && !this.canAttack) {
+				this.canAttack = true;
+			}
+		}
 		
 		update() {
+			this.controls();
+			this.checkAttack();
+			
 			this.bar.x = this.x - (this.barWidth * 0.5);
 			this.bar.y = this.y - 30;
 			this.bar.loadTexture(this.getHealthBar());

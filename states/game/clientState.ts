@@ -66,5 +66,10 @@ module GameModule {
 				that.client.input(keyName, false);
 			}, this);
 		}
+		
+		attack(sword: Phaser.Sprite) {
+			console.log("send attack");
+			this.swordTimeout(sword);
+		}
 	}
 }

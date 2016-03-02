@@ -15,7 +15,6 @@ module GameModule {
 		}
 
 		update() {
-			this.controls();
 			super.update();
 		}
 	}

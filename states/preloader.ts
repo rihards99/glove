@@ -15,6 +15,8 @@ module GameModule {
 			this.load.spritesheet('knight2', 'img/new_knight2.png', 32, 32, 12);
 			
 			this.load.image('sword', 'img/sword.png');
+			this.load.image('trap', 'img/trap.png');
+			this.load.image('wall', 'img/wall.png');
 		}
 
 		create() {

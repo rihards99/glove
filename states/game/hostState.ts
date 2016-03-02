@@ -49,6 +49,28 @@ module GameModule {
 				that.keyboardState[that.server.peer.id][keyName] = false;
 			}, this);
 		}
+		
+		attack(sword: Phaser.Sprite) {
+			this.checkHit(sword, this.player);
+			// console.log({
+			// 	x: sword.body.x,
+			// 	y: sword.body.y,
+			// 	width: sword.body.width,
+			// 	height: sword.body.height
+			// });
+			for (var key in this.players) {
+				this.checkHit(sword, this.players[key]);
+			}
+			
+			this.swordTimeout(sword);
+		}
+		
+		checkHit(sword: Phaser.Sprite, player: Phaser.Sprite) {
+			if (this.game.physics.arcade.overlap(sword, player)) {
+				console.log("hit " + player.key);
+				player.health -= 10;
+			}
+		}
 
 		update() {
 			if (this.activeUpdates) {
