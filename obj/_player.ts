@@ -3,7 +3,8 @@ module GameModule {
 	export abstract class Player extends Phaser.Sprite {
 		walkSpeed: number = 100;
 		slowDownSpeed: number = 10; // Needs to be a fraction of the walk speed.
-		canAttack: boolean = true;
+		canDoAction: boolean = true;
+		moveTimeout: number = 200;
 		direction: Direction = Direction.UP;
 		
 		bar: Phaser.Sprite;
@@ -18,6 +19,7 @@ module GameModule {
 			game.add.existing(this);
 			game.physics.enable(this, Phaser.Physics.ARCADE);
 			this.body.width = 25;
+			this.body.height = 25;
 			
 			this.animations.add('down', [0, 1, 2], 10, true);
 			this.animations.add('left', [3, 4, 5], 10, true);
@@ -33,6 +35,8 @@ module GameModule {
 		controls() {
 			this.body.velocity.x = 0;
 			this.body.velocity.y = 0;
+			
+			if (!this.canDoAction) return;
 			
 			// UP/DOWN controls
 			if (this.isKeyDown('W')){
@@ -59,20 +63,11 @@ module GameModule {
 			else {
 				this.animations.stop();
 			}
-			
-			// TODO: TESTING
-			if (this.isKeyDown('E')) {
-				this.health -= 1;
-			}
-			
-			if (this.isKeyDown('Q')) {
-				this.health += 1;
-			}
 		}
 
-		checkAttack(){
-			if (this.isKeyDown('SPACEBAR') && this.canAttack) {
-				this.canAttack = false;
+		checkAttack() {
+			if (this.isKeyDown('SPACEBAR') && this.canDoAction) {
+				this.setMoveTimeout(this.moveTimeout);
 				var sword = this.game.add.sprite(this.x, this.y, 'sword');
 				this.game.physics.enable(sword);
 				
@@ -110,21 +105,53 @@ module GameModule {
 				var state: any = this.game.state.getCurrentState();
 				state.attack(sword);
 			}
-			else if (!this.isKeyDown('SPACEBAR') && !this.canAttack) {
-				this.canAttack = true;
+		}
+		
+		checkTrap() {
+			if (this.isKeyDown('E') && this.canDoAction) {
+				this.setMoveTimeout(this.moveTimeout);
+				var trap = this.game.add.sprite(0, 0, 'trap');
+				trap.anchor.setTo(0.5, 0.5);
+				trap.x = this.x;
+				trap.y = this.y;
+				if (this.direction == Direction.UP) {
+					trap.y -= this.height;
+				}
+				else if (this.direction == Direction.DOWN) {
+					trap.y += this.height;
+				}
+				else if (this.direction == Direction.LEFT) {
+					trap.x -= this.width;
+				}
+				else if (this.direction == Direction.RIGHT) {
+					trap.x += this.width;
+				}
+				this.game.physics.enable(trap);
+				var state: any = this.game.state.getCurrentState();
+				state.placeTrap(trap);
 			}
 		}
 		
 		update() {
 			this.controls();
 			this.checkAttack();
+			this.checkTrap();
 			
 			this.bar.x = this.x - (this.barWidth * 0.5);
 			this.bar.y = this.y - 30;
 			this.bar.loadTexture(this.getHealthBar());
 		}
 		
-		getHealthBar(): Phaser.BitmapData {
+		// Also used in trap triggers
+		setMoveTimeout(time: number) {
+			this.animations.stop();
+			this.canDoAction = false;
+			this.game.time.events.add(time, function(){
+				this.canDoAction = true;
+			}, this);
+		}
+		
+		private getHealthBar(): Phaser.BitmapData {
 			var bmd = this.game.make.bitmapData(this.barWidth, this.barHeight);
 			bmd.context.fillStyle = '#000';
 			bmd.context.fillRect(0, 0, this.barWidth, this.barHeight);

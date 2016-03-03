@@ -68,8 +68,15 @@ module GameModule {
 		}
 		
 		attack(sword: Phaser.Sprite) {
-			console.log("send attack");
 			this.swordTimeout(sword);
+		}
+		
+		placeTrap(trap: Phaser.Sprite) {
+			// TODO:
+		}
+		
+		triggerTrap(player: GameModule.Player, trap: Phaser.Sprite) {
+			// TODO:
 		}
 	}
 }

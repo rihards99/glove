@@ -52,12 +52,6 @@ module GameModule {
 		
 		attack(sword: Phaser.Sprite) {
 			this.checkHit(sword, this.player);
-			// console.log({
-			// 	x: sword.body.x,
-			// 	y: sword.body.y,
-			// 	width: sword.body.width,
-			// 	height: sword.body.height
-			// });
 			for (var key in this.players) {
 				this.checkHit(sword, this.players[key]);
 			}
@@ -67,9 +61,18 @@ module GameModule {
 		
 		checkHit(sword: Phaser.Sprite, player: Phaser.Sprite) {
 			if (this.game.physics.arcade.overlap(sword, player)) {
-				console.log("hit " + player.key);
 				player.health -= 10;
 			}
+		}
+		
+		placeTrap(trap: Phaser.Sprite) {
+			this.trapGroup.add(trap);
+		}
+		
+		triggerTrap(player: GameModule.Player, trap: Phaser.Sprite) {
+			trap.destroy();
+			player.health -= 5;
+			player.setMoveTimeout(this.trapTimeout);
 		}
 
 		update() {
