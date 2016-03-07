@@ -84,11 +84,6 @@ module GameModule {
 			this.game.physics.arcade.collide(this.peerGroup, this.wallGroup);
 			this.game.physics.arcade.collide(this.player, this.peerGroup);
 			this.game.physics.arcade.collide(this.player, this.wallGroup);
-			
-			this.game.physics.arcade.overlap(this.peerGroup, this.trapGroup, 
-				this.triggerTrap, null, this);
-			this.game.physics.arcade.overlap(this.player, this.trapGroup, 
-				this.triggerTrap, null, this);
 		}
 
 		render() {}

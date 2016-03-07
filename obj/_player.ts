@@ -1,5 +1,5 @@
 module GameModule {
-	enum Direction {UP, DOWN, LEFT, RIGHT};
+	export enum Direction {UP, DOWN, LEFT, RIGHT};
 	export abstract class Player extends Phaser.Sprite {
 		walkSpeed: number = 100;
 		slowDownSpeed: number = 10; // Needs to be a fraction of the walk speed.
@@ -64,7 +64,7 @@ module GameModule {
 				this.animations.stop();
 			}
 		}
-
+		
 		checkAttack() {
 			if (this.isKeyDown('SPACEBAR') && this.canDoAction) {
 				this.setMoveTimeout(this.moveTimeout);
@@ -110,25 +110,10 @@ module GameModule {
 		checkTrap() {
 			if (this.isKeyDown('E') && this.canDoAction) {
 				this.setMoveTimeout(this.moveTimeout);
-				var trap = this.game.add.sprite(0, 0, 'trap');
-				trap.anchor.setTo(0.5, 0.5);
-				trap.x = this.x;
-				trap.y = this.y;
-				if (this.direction == Direction.UP) {
-					trap.y -= this.height;
-				}
-				else if (this.direction == Direction.DOWN) {
-					trap.y += this.height;
-				}
-				else if (this.direction == Direction.LEFT) {
-					trap.x -= this.width;
-				}
-				else if (this.direction == Direction.RIGHT) {
-					trap.x += this.width;
-				}
-				this.game.physics.enable(trap);
 				var state: any = this.game.state.getCurrentState();
-				state.placeTrap(trap);
+				// TODO: need to check if there's a better way to do this
+				console.log(state instanceof HostState);
+				if (state instanceof HostState) state.placeTrap(this);
 			}
 		}
 		

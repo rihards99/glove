@@ -58,15 +58,36 @@ module GameModule {
 				}
 			});
 		}
+		
+		placeTrap(coords) {
+			this.broadcast({
+				method: "placeTrap",
+				params: {
+					coords: coords
+				}
+			});
+		}
+		
+		triggerTrap(playerKey, trapIndex) {
+			this.broadcast({
+				method: "triggerTrap",
+				params: {
+					playerKey: playerKey,
+					trapIndex: trapIndex
+				}
+			});
+		}
 
+		// Run when a connection is established
 		private addPeer(conn) {
 			var coords = this.randomCoords();
 
 			conn.send({
 				method: "initState",
 				params: {
-					peers: this.state.getPlayers(),
-					player: coords
+					player: coords,
+					traps: this.state.getTraps(),
+					peers: this.state.getPlayers()
 				}
 			});
 			

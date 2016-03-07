@@ -28,7 +28,7 @@ module GameModule {
 		
 		// RECIEVE
 		private initState(params) {
-			this.state.initState(params.player, params.peers);
+			this.state.initState(params.player, params.traps, params.peers);
 		}
 
 		private syncState(params) {
@@ -42,6 +42,14 @@ module GameModule {
 		
 		private removePeer(params) {
 			this.state.removePeer(params.id)
+		}
+		
+		private placeTrap(params) {
+			this.state.placeTrap(params.coords)
+		}
+		
+		private triggerTrap(params) {
+			this.state.triggerTrap(params.playerKey, params.trapIndex)
 		}
 
 		// SEND

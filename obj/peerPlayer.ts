@@ -13,9 +13,6 @@ module GameModule {
 		isKeyDown(key: string): boolean {
 			return this.state.keyboardState[this.key][key];
 		}
-		
-		// Overrides to turn off placing trap on clientside
-		checkTrap() {}
 
 		update() {
 			super.update();

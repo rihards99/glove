@@ -9,11 +9,18 @@ module GameModule {
 			this.client.start();
 		}
 
-		initState(player, peers) {
+		initState(player, traps, peers) {
 			this.player = new ClientPlayer(this.game, player.x, player.y);
 
 			for (var key in peers) {
 				this.addPeer(key, peers[key])
+			}
+			
+			for (var key in traps) {
+				this.placeTrap({
+					x: traps[key].x, 
+					y: traps[key].y
+				});
 			}
 			this.activeUpdates = true;
 		}
@@ -26,6 +33,7 @@ module GameModule {
 			this.player.body.velocity.x = players[this.client.conn.id].dx;
 			this.player.body.velocity.y = players[this.client.conn.id].dy;
 			this.player.health = players[this.client.conn.id].health;
+			this.player.canDoAction = players[this.client.conn.id].canDoAction;
 
 			for(var key in players) {
 				if (key === this.client.conn.id) continue;
@@ -36,6 +44,7 @@ module GameModule {
 				this.players[key].body.velocity.x = players[key].dx;
 				this.players[key].body.velocity.y = players[key].dy;
 				this.players[key].health = players[key].health;
+				this.players[key].canDoAction = players[key].canDoAction;
 			}
 		}
 		
@@ -71,12 +80,30 @@ module GameModule {
 			this.swordTimeout(sword);
 		}
 		
-		placeTrap(trap: Phaser.Sprite) {
-			// TODO:
+		placeTrap(coords) {
+			var trap = this.game.add.sprite(0, 0, 'trap');
+			trap.anchor.setTo(0.5, 0.5);
+			trap.x = coords.x;
+			trap.y = coords.y;
+			if (!this.activeUpdates) {
+				trap.alpha = 0
+			}
+			else {
+				this.game.add.tween(trap).to( { alpha: 0 }, 2000, "Linear", true);
+			}
+			this.game.physics.enable(trap);
+			this.trapGroup.add(trap);
 		}
 		
-		triggerTrap(player: GameModule.Player, trap: Phaser.Sprite) {
-			// TODO:
+		triggerTrap(playerKey, trapIndex) {
+			var trap = this.trapGroup.getAt(trapIndex);
+			this.trapGroup.remove(trap, true);
+			if (playerKey == this.client.conn.id) {
+				this.player.setMoveTimeout(this.trapTimeout);
+			}
+			else {
+				this.players[playerKey].setMoveTimeout(this.trapTimeout);
+			}
 		}
 	}
 }

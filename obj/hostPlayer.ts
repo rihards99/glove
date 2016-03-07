@@ -1,5 +1,5 @@
 module GameModule {
-	enum Direction {UP, DOWN, LEFT, RIGHT};
+	//enum Direction {UP, DOWN, LEFT, RIGHT};
 	export class HostPlayer extends Player {
 
 		constructor(game: GameModule.Game, x: number, y: number) {
