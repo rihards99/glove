@@ -24,3 +24,39 @@
     left: 20px;
 	top: 20px;
 }
+
+.sword-icon {
+	position: absolute;
+    left: 20px;
+	top: 530px;
+	
+}
+
+#swordIcon > span {
+	padding: 10px;
+	font-size: 14px;
+    font-weight: bold;
+}
+
+.arrow-icon {
+	position: absolute;
+    left: 100px;
+	top: 530px;
+	
+}
+
+#arrowIcon > span {
+	padding: 10px;
+	font-size: 14px;
+    font-weight: bold;
+}
+
+.selected-icon {
+	background: #333;
+}
+
+.well {
+	border-color: #333;
+    border-radius: 7px;
+    border-width: 2px;
+}

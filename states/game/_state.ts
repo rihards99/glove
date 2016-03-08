@@ -7,6 +7,7 @@ module GameModule {
 		peerGroup: Phaser.Group;
 		wallGroup: Phaser.Group;
 		trapGroup: Phaser.Group;
+		arrowGroup: Phaser.Group;
 		activeUpdates: boolean = false;
 		keys: any = ["W", "A", "S", "D", "E", "Q", "SPACEBAR"];
 		attackTimeout: number = 200;
@@ -22,6 +23,8 @@ module GameModule {
 			this.peerGroup.enableBody = true;
 			this.wallGroup = this.game.add.group();
 			this.wallGroup.enableBody = true;
+			this.arrowGroup = this.game.add.group();
+			this.arrowGroup.enableBody = true;
 			this.trapGroup = this.game.add.group();
 			this.trapGroup.enableBody = true;
 			
@@ -31,6 +34,7 @@ module GameModule {
 		
 		abstract setKeyCallbacks(keyName: string);
 		abstract attack(sword: Phaser.Sprite);
+		abstract shoot(sword: Phaser.Sprite);
 		abstract placeTrap(trap: Phaser.Sprite);
 		abstract triggerTrap(player: GameModule.Player, trap: Phaser.Sprite);
 

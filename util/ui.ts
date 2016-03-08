@@ -41,9 +41,24 @@ module GameModule {
 			var hostKey = $("#hostKey");
 			this.elements.push(hostKey);
 			hostKey.addClass('host-key well well-sm');
+			
+			$("#ui").append('<div id="swordIcon"><span>1</span><img src="img/sword.png"></div>');
+			var swordIcon = $("#swordIcon");
+			this.elements.push(swordIcon);
+			swordIcon.addClass('sword-icon selected-icon well well-sm');
+			
+			$("#ui").append('<div id="arrowIcon"><span>2</span><img src="img/arrow.png"></div>');
+			var arrowIcon = $("#arrowIcon");
+			this.elements.push(arrowIcon);
+			arrowIcon.addClass('arrow-icon well well-sm');
+		}
+		
+		select(weapon: string) {
+			$(".well").removeClass("selected-icon");
+			$("#" + weapon + "Icon").addClass("selected-icon");
 		}
 
-		setHostKey(key) {
+		setHostKey(key: string) {
 			$("#hostKey").html(key);
 		}
 		

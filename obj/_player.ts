@@ -1,11 +1,15 @@
 module GameModule {
 	export enum Direction {UP, DOWN, LEFT, RIGHT};
+	export enum Weapon {SWORD, ARROW}
 	export abstract class Player extends Phaser.Sprite {
+		game: GameModule.Game;
+		
 		walkSpeed: number = 100;
 		slowDownSpeed: number = 10; // Needs to be a fraction of the walk speed.
 		canDoAction: boolean = true;
 		moveTimeout: number = 200;
 		direction: Direction = Direction.UP;
+		weapon: Weapon = Weapon.SWORD;
 		
 		bar: Phaser.Sprite;
 		health: number = 100;
@@ -67,44 +71,61 @@ module GameModule {
 		
 		checkAttack() {
 			if (this.isKeyDown('SPACEBAR') && this.canDoAction) {
-				this.setMoveTimeout(this.moveTimeout);
-				var sword = this.game.add.sprite(this.x, this.y, 'sword');
-				this.game.physics.enable(sword);
-				
-				if (this.direction == Direction.UP) {
-					sword.x -= (sword.width / 2);
-					sword.y -= sword.height * 1.5;
-					sword.body.x = sword.x;
-					sword.body.y = sword.y;
+				switch(this.weapon){
+					case Weapon.SWORD:
+						this.swordAttack();
+						break;
+					case Weapon.ARROW:
+						this.arrowAttack();
+						break;
 				}
-				else if (this.direction == Direction.DOWN) {
-					sword.angle += 180;
-					sword.x += (sword.width / 2);
-					sword.y += sword.height * 1.5;
-					sword.body.x = sword.x - sword.width;
-					sword.body.y = sword.y - sword.height;
-				}
-				else if (this.direction == Direction.LEFT) {
-					sword.angle += 270;
-					sword.x -= sword.height * 1.5;
-					sword.y += (sword.width / 2);
-					sword.body.width = sword.height;
-					sword.body.height = sword.width;
-					sword.body.x = sword.x;
-					sword.body.y = sword.y - sword.width;
-				}
-				else if (this.direction == Direction.RIGHT) {
-					sword.angle += 90;
-					sword.x += sword.height * 1.5;
-					sword.y -= (sword.width / 2);
-					sword.body.width = sword.height;
-					sword.body.height = sword.width;
-					sword.body.x = sword.x - sword.height;
-					sword.body.y = sword.y;
-				}
-				var state: any = this.game.state.getCurrentState();
-				state.attack(sword);
 			}
+		}
+		
+		swordAttack() {
+			this.setMoveTimeout(this.moveTimeout);
+			var sword = this.game.add.sprite(this.x, this.y, 'sword');
+			this.game.physics.enable(sword);
+			
+			if (this.direction == Direction.UP) {
+				sword.x -= (sword.width / 2);
+				sword.y -= sword.height * 1.5;
+				sword.body.x = sword.x;
+				sword.body.y = sword.y;
+			}
+			else if (this.direction == Direction.DOWN) {
+				sword.angle += 180;
+				sword.x += (sword.width / 2);
+				sword.y += sword.height * 1.5;
+				sword.body.x = sword.x - sword.width;
+				sword.body.y = sword.y - sword.height;
+			}
+			else if (this.direction == Direction.LEFT) {
+				sword.angle += 270;
+				sword.x -= sword.height * 1.5;
+				sword.y += (sword.width / 2);
+				sword.body.width = sword.height;
+				sword.body.height = sword.width;
+				sword.body.x = sword.x;
+				sword.body.y = sword.y - sword.width;
+			}
+			else if (this.direction == Direction.RIGHT) {
+				sword.angle += 90;
+				sword.x += sword.height * 1.5;
+				sword.y -= (sword.width / 2);
+				sword.body.width = sword.height;
+				sword.body.height = sword.width;
+				sword.body.x = sword.x - sword.height;
+				sword.body.y = sword.y;
+			}
+			var state: any = this.game.state.getCurrentState();
+			state.attack(sword);
+		}
+		
+		arrowAttack() {
+			this.setMoveTimeout(this.moveTimeout);
+			var state: any = this.game.state.getCurrentState();
+			if (state instanceof HostState) state.shoot(this);
 		}
 		
 		checkTrap() {
@@ -112,7 +133,6 @@ module GameModule {
 				this.setMoveTimeout(this.moveTimeout);
 				var state: any = this.game.state.getCurrentState();
 				// TODO: need to check if there's a better way to do this
-				console.log(state instanceof HostState);
 				if (state instanceof HostState) state.placeTrap(this);
 			}
 		}

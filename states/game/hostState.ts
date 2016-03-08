@@ -78,9 +78,51 @@ module GameModule {
 			}
 		}
 		
+		shoot(player: Player) {
+			var arrow = this.game.add.sprite(player.x, player.y, 'arrow');
+			this.game.physics.enable(arrow);
+			if (player.direction == Direction.UP) {
+				arrow.x -= (arrow.width / 2);
+				arrow.y -= arrow.height * 1.5;
+				arrow.body.x = arrow.x;
+				arrow.body.y = arrow.y;
+				arrow.body.velocity.y = -300;
+			}
+			else if (player.direction == Direction.DOWN) {
+				arrow.angle += 180;
+				arrow.x += (arrow.width / 2);
+				arrow.y += arrow.height * 1.5;
+				arrow.body.x = arrow.x - arrow.width;
+				arrow.body.y = arrow.y - arrow.height;
+				arrow.body.velocity.y = 300;
+			}
+			else if (player.direction == Direction.LEFT) {
+				arrow.angle += 270;
+				arrow.x -= arrow.height * 1.5;
+				arrow.y += (arrow.width / 2);
+				arrow.body.width = arrow.height;
+				arrow.body.height = arrow.width;
+				arrow.body.x = arrow.x;
+				arrow.body.y = arrow.y - arrow.width;
+				arrow.body.velocity.x = -300;
+			}
+			else if (player.direction == Direction.RIGHT) {
+				arrow.angle += 90;
+				arrow.x += arrow.height * 1.5;
+				arrow.y -= (arrow.width / 2);
+				arrow.body.width = arrow.height;
+				arrow.body.height = arrow.width;
+				arrow.body.x = arrow.x - arrow.height;
+				arrow.body.y = arrow.y;
+				arrow.body.velocity.x = 300;
+			}
+			this.arrowGroup.add(arrow);
+			this.game.debug.body(arrow);
+			//arrow.body.velocity.x = 300;
+		}
+		
 		placeTrap(player: Player) {
 			var trap = this.game.add.sprite(0, 0, 'trap');
-			trap.anchor.setTo(0.5, 0.5);
 			trap.x = player.x;
 			trap.y = player.y;
 			if (player.direction == Direction.UP) {

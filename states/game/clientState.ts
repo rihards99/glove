@@ -80,6 +80,10 @@ module GameModule {
 			this.swordTimeout(sword);
 		}
 		
+		shoot(player: Player) {
+			
+		}
+		
 		placeTrap(coords) {
 			var trap = this.game.add.sprite(0, 0, 'trap');
 			trap.anchor.setTo(0.5, 0.5);
