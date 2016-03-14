@@ -33,7 +33,7 @@ module GameModule {
 
 		private syncState(params) {
 			this.state.keyboardState = params.keyboard;
-			this.state.syncState(params.state);
+			this.state.syncState(params.state, params.projectiles);
 		}
 		
 		private addPeer(params) {
@@ -51,6 +51,14 @@ module GameModule {
 		private triggerTrap(params) {
 			this.state.triggerTrap(params.playerKey, params.trapIndex)
 		}
+		
+		private shoot(params) {
+			this.state.shoot(params.x, params.y, params.direction);
+		}
+		
+		private arrowDestroy(params) {
+			this.state.arrowDestroy(params.index);
+		}
 
 		// SEND
 		input(key, isDown) {
@@ -60,6 +68,17 @@ module GameModule {
 					id: this.conn.id,
 					key: key,
 					state: isDown
+				}
+			});
+		}
+		
+		weaponSelect(weapon: string) {
+			console.log("send weapon " + weapon);
+			this.conn.send({
+				method: "weaponSelect",
+				params: {
+					id: this.conn.id,
+					weapon: weapon
 				}
 			});
 		}

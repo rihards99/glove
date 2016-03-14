@@ -29,34 +29,70 @@
 	position: absolute;
     left: 20px;
 	top: 530px;
-	
-}
-
-#swordIcon > span {
-	padding: 10px;
-	font-size: 14px;
-    font-weight: bold;
 }
 
 .arrow-icon {
 	position: absolute;
     left: 100px;
 	top: 530px;
-	
 }
 
-#arrowIcon > span {
-	padding: 10px;
-	font-size: 14px;
-    font-weight: bold;
+.trap-icon {
+	position: absolute;
+    left: 180px;
+	top: 530px;
 }
 
 .selected-icon {
-	background: #333;
+	box-shadow: 0px 0px 0px 4px #333;
+}
+
+.ui-icon {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.weapon-button {
+	height: 54px;
+	width: 54px;
+}
+
+.weapon-button > span {
+	position: absolute;
+	top: 0px;
+	left: 5px;
+	font-size: 14px;
+    font-weight: bold;
 }
 
 .well {
 	border-color: #333;
     border-radius: 7px;
     border-width: 2px;
+}
+
+#stunProgress {
+    position: absolute;
+	left: 200px;
+	bottom: 50px;
+	width: 400px;
+	height: 20px;
+    background-color: grey;
+    border-radius: 5px;
+}
+#stunBar {
+    position: absolute;
+    width: 1%;
+    height: 100%;
+    background-color: #d92626;
+	border-radius: 5px;
+}
+
+#stunBarLabel {
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    position: absolute;
+	width: 100%;
 }

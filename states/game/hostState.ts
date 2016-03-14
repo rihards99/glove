@@ -12,8 +12,10 @@ module GameModule {
 		}
 
 		initState() { // run after server.start()
+			this.initMap();
 			var coords = this.server.randomCoords();
 			this.player = new HostPlayer(this.game, coords.x, coords.y);
+			this.game.camera.follow(this.player);
 			this.keyboardState[this.server.peer.id] = this.getDefaultKeyboardObj();
 			this.activeUpdates = true;
 		}
@@ -52,6 +54,17 @@ module GameModule {
 			return temp;
 		}
 		
+		getProjectiles(): Object {
+			var temp = {};
+			for (var i = 0; i < this.arrowGroup.total; i++) {
+				temp[i] = {
+					x: this.arrowGroup.getAt(i).x,
+					y: this.arrowGroup.getAt(i).y
+				}
+			}
+			return temp;
+		}
+		
 		setKeyCallbacks(keyName: string) {
 			var key = this.game.input.keyboard.addKey(Phaser.Keyboard[keyName]);
 			var that = this;
@@ -78,68 +91,62 @@ module GameModule {
 			}
 		}
 		
+		arrowHit(player: GameModule.Player, arrow: Phaser.Sprite) {
+			this.arrowDestroy(arrow);
+			player.health -= 10;
+		}
+		
+		arrowDestroy(arrow) {
+			this.server.arrowDestroy(this.arrowGroup.getIndex(arrow));
+			// For some reason calling destroy() doesn't work but calling the
+			// function like a parameter works.
+			this.arrowGroup.remove(arrow);
+			arrow.destory;
+		}
+		
 		shoot(player: Player) {
 			var arrow = this.game.add.sprite(player.x, player.y, 'arrow');
 			this.game.physics.enable(arrow);
 			if (player.direction == Direction.UP) {
 				arrow.x -= (arrow.width / 2);
 				arrow.y -= arrow.height * 1.5;
-				arrow.body.x = arrow.x;
-				arrow.body.y = arrow.y;
-				arrow.body.velocity.y = -300;
+				arrow.body.velocity.y = -this.arrowSpeed;
 			}
 			else if (player.direction == Direction.DOWN) {
 				arrow.angle += 180;
 				arrow.x += (arrow.width / 2);
 				arrow.y += arrow.height * 1.5;
-				arrow.body.x = arrow.x - arrow.width;
-				arrow.body.y = arrow.y - arrow.height;
-				arrow.body.velocity.y = 300;
+				arrow.body.setSize(arrow.width, arrow.height, -arrow.width, -arrow.height);
+				arrow.body.velocity.y = this.arrowSpeed;
 			}
 			else if (player.direction == Direction.LEFT) {
 				arrow.angle += 270;
 				arrow.x -= arrow.height * 1.5;
 				arrow.y += (arrow.width / 2);
-				arrow.body.width = arrow.height;
-				arrow.body.height = arrow.width;
-				arrow.body.x = arrow.x;
-				arrow.body.y = arrow.y - arrow.width;
-				arrow.body.velocity.x = -300;
+				arrow.body.setSize(arrow.height, arrow.width, 0, -arrow.width);
+				arrow.body.velocity.x = -this.arrowSpeed;
 			}
 			else if (player.direction == Direction.RIGHT) {
 				arrow.angle += 90;
 				arrow.x += arrow.height * 1.5;
 				arrow.y -= (arrow.width / 2);
-				arrow.body.width = arrow.height;
-				arrow.body.height = arrow.width;
-				arrow.body.x = arrow.x - arrow.height;
-				arrow.body.y = arrow.y;
-				arrow.body.velocity.x = 300;
+				arrow.body.setSize(arrow.height, arrow.width, -arrow.height, 0);
+				arrow.body.velocity.x = this.arrowSpeed;
 			}
+			
 			this.arrowGroup.add(arrow);
-			this.game.debug.body(arrow);
-			//arrow.body.velocity.x = 300;
+			var dirString = null;
+			if (player.direction == Direction.UP) dirString = "up"
+			else if (player.direction == Direction.DOWN) dirString = "down"
+			else if (player.direction == Direction.LEFT) dirString = "left"
+			else if (player.direction == Direction.RIGHT) dirString = "right";
+			this.server.shoot(arrow.x, arrow.y, dirString);
 		}
 		
 		placeTrap(player: Player) {
-			var trap = this.game.add.sprite(0, 0, 'trap');
-			trap.x = player.x;
-			trap.y = player.y;
-			if (player.direction == Direction.UP) {
-				trap.y -= player.height;
-			}
-			else if (player.direction == Direction.DOWN) {
-				trap.y += player.height;
-			}
-			else if (player.direction == Direction.LEFT) {
-				trap.x -= player.width;
-			}
-			else if (player.direction == Direction.RIGHT) {
-				trap.x += player.width;
-			}
+			var trap = new Trap(this.game, player);
 			this.game.add.tween(trap).to( { alpha: 0 }, 2000, "Linear", true);
 			this.server.placeTrap({x: trap.x, y: trap.y});
-			this.game.physics.enable(trap);
 			this.trapGroup.add(trap);
 		}
 		
@@ -147,18 +154,25 @@ module GameModule {
 			this.server.triggerTrap(player.key, this.trapGroup.getIndex(trap));
 			this.trapGroup.remove(trap, true);
 			player.health -= 5;
-			player.setMoveTimeout(this.trapTimeout);
+			player.setTrapTimer(this.trapTimeout);
 		}
 
 		update() {
 			if (this.activeUpdates) {
-				super.update();
 				this.game.physics.arcade.overlap(this.peerGroup, this.trapGroup, 
 					this.triggerTrap, null, this);
 				this.game.physics.arcade.overlap(this.player, this.trapGroup, 
 					this.triggerTrap, null, this);
+					
+				this.game.physics.arcade.overlap(this.arrowGroup, this.wallGroup, 
+					this.arrowDestroy, null, this);
+				this.game.physics.arcade.collide(this.peerGroup, this.arrowGroup, 
+					this.arrowHit, null, this);
+				this.game.physics.arcade.collide(this.player, this.arrowGroup, 
+					this.arrowHit, null, this);
+				super.update();
 				// Broadcast the current state
-				this.server.syncState(this.getPlayers());
+				this.server.syncState(this.getPlayers(), this.getProjectiles());
 			}
 		}
 	}

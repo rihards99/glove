@@ -49,12 +49,13 @@ module GameModule {
 			this.state.keyboardState[params.id][params.key] = params.state;
 		}
 
-		syncState(state) {
+		syncState(state, projectiles) {
 			this.broadcast({
 				method: "syncState",
 				params: {
 					state: state,
-					keyboard: this.state.keyboardState
+					keyboard: this.state.keyboardState,
+					projectiles: projectiles
 				}
 			});
 		}
@@ -74,6 +75,26 @@ module GameModule {
 				params: {
 					playerKey: playerKey,
 					trapIndex: trapIndex
+				}
+			});
+		}
+		
+		shoot(x: number, y: number, direction: string) {
+			this.broadcast({
+				method: "shoot",
+				params: {
+					x: x,
+					y: y,
+					direction: direction
+				}
+			});
+		}
+		
+		arrowDestroy(index: number) {
+			this.broadcast({
+				method: "arrowDestroy",
+				params: {
+					index: index
 				}
 			});
 		}
@@ -110,6 +131,22 @@ module GameModule {
 					id: conn.id
 				}
 			});
+		}
+		
+		private weaponSelect(params) {
+			console.log("switch to " + params.weapon);
+			switch(params.weapon) {
+				case "sword":
+					this.state.players[params.id].weapon = Weapon.SWORD;
+					break;
+				case "arrow":
+					this.state.players[params.id].weapon = Weapon.ARROW;
+					break;
+				case "trap":
+					this.state.players[params.id].weapon = Weapon.TRAP;
+					break;
+			}
+			
 		}
 		
 		private broadcast(params: Object) {

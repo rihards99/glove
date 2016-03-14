@@ -1,6 +1,6 @@
 module GameModule {
 	export enum Direction {UP, DOWN, LEFT, RIGHT};
-	export enum Weapon {SWORD, ARROW}
+	export enum Weapon {SWORD, ARROW, TRAP}
 	export abstract class Player extends Phaser.Sprite {
 		game: GameModule.Game;
 		
@@ -8,6 +8,8 @@ module GameModule {
 		slowDownSpeed: number = 10; // Needs to be a fraction of the walk speed.
 		canDoAction: boolean = true;
 		moveTimeout: number = 200;
+		trapTimer: Phaser.Timer;
+		
 		direction: Direction = Direction.UP;
 		weapon: Weapon = Weapon.SWORD;
 		
@@ -19,6 +21,7 @@ module GameModule {
 
 		constructor(game: GameModule.Game, x: number, y: number, sprite: string) {
 			super(game, x, y, sprite, 0);
+			this.trapTimer = this.game.time.create(false);
 			this.anchor.setTo(0.5, 0.5);
 			game.add.existing(this);
 			game.physics.enable(this, Phaser.Physics.ARCADE);
@@ -78,6 +81,9 @@ module GameModule {
 					case Weapon.ARROW:
 						this.arrowAttack();
 						break;
+					case Weapon.TRAP:
+						this.checkTrap();
+						break;
 				}
 			}
 		}
@@ -129,31 +135,44 @@ module GameModule {
 		}
 		
 		checkTrap() {
-			if (this.isKeyDown('E') && this.canDoAction) {
-				this.setMoveTimeout(this.moveTimeout);
-				var state: any = this.game.state.getCurrentState();
-				// TODO: need to check if there's a better way to do this
-				if (state instanceof HostState) state.placeTrap(this);
-			}
+			this.setMoveTimeout(this.moveTimeout);
+			var state: any = this.game.state.getCurrentState();
+			// TODO: need to check if there's a better way to do this
+			if (state instanceof HostState) state.placeTrap(this);
+			
+			// if (this.isKeyDown('E') && this.canDoAction) {
+			// 	this.setMoveTimeout(this.moveTimeout);
+			// 	var state: any = this.game.state.getCurrentState();
+			// 	// TODO: need to check if there's a better way to do this
+			// 	if (state instanceof HostState) state.placeTrap(this);
+			// }
 		}
 		
 		update() {
 			this.controls();
 			this.checkAttack();
-			this.checkTrap();
+			//this.checkTrap();
 			
 			this.bar.x = this.x - (this.barWidth * 0.5);
 			this.bar.y = this.y - 30;
 			this.bar.loadTexture(this.getHealthBar());
 		}
 		
-		// Also used in trap triggers
 		setMoveTimeout(time: number) {
 			this.animations.stop();
 			this.canDoAction = false;
 			this.game.time.events.add(time, function(){
 				this.canDoAction = true;
 			}, this);
+		}
+		
+		setTrapTimer(time: number) {
+			this.animations.stop();
+			this.canDoAction = false;
+			this.trapTimer.add(time, function(){
+				this.canDoAction = true;
+			}, this);
+			this.trapTimer.start();
 		}
 		
 		private getHealthBar(): Phaser.BitmapData {

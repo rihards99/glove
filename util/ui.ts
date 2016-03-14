@@ -13,6 +13,7 @@ module GameModule {
 		}
 		
 		drawMainMenu() {
+			// Switch to the .load() method
 			$("#ui").append('<button id="hostBtn">Host Game</button>');
 			var hostBtn = $("#hostBtn");
 			this.elements.push(hostBtn);
@@ -37,20 +38,7 @@ module GameModule {
 		}
 		
 		drawGameUi() {
-			$("#ui").append('<div id="hostKey"></div>');
-			var hostKey = $("#hostKey");
-			this.elements.push(hostKey);
-			hostKey.addClass('host-key well well-sm');
-			
-			$("#ui").append('<div id="swordIcon"><span>1</span><img src="img/sword.png"></div>');
-			var swordIcon = $("#swordIcon");
-			this.elements.push(swordIcon);
-			swordIcon.addClass('sword-icon selected-icon well well-sm');
-			
-			$("#ui").append('<div id="arrowIcon"><span>2</span><img src="img/arrow.png"></div>');
-			var arrowIcon = $("#arrowIcon");
-			this.elements.push(arrowIcon);
-			arrowIcon.addClass('arrow-icon well well-sm');
+			$("#ui").load("util/views/game.html");
 		}
 		
 		select(weapon: string) {
@@ -66,6 +54,18 @@ module GameModule {
 			for (var element of this.elements) {
 				$(element).remove();
 			}
+		}
+		
+		stunBar(value: number, max: number) {
+			if (value == 0) return;
+			
+			var percent = (value / max) * 100;
+			if (percent >= 3) 
+				$("#stunProgress").show()
+			else 
+				$("#stunProgress").hide();
+			document.getElementById("stunBar").style.width = percent + '%';
+			document.getElementById("stunBarLabel").innerHTML = (value / 1000).toFixed(2) + "s";
 		}
 	}
 }

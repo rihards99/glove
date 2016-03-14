@@ -13,6 +13,7 @@ module GameModule {
 			// this.load.audio('music', 'img/title.mp3', true);
 			this.load.spritesheet('knight', 'img/new_knight.png', 32, 32, 12);
 			this.load.spritesheet('knight2', 'img/new_knight2.png', 32, 32, 12);
+			this.load.spritesheet('map', 'img/map_sprites2.png', 32, 32, 228);
 			
 			this.load.image('sword', 'img/sword.png');
 			this.load.image('arrow', 'img/arrow.png');
